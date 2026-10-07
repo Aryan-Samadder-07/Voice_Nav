@@ -1,132 +1,134 @@
-﻿# 🎙️ VoiceDOM: Universal Multilingual AI Voice Web Navigator & Form Autopilot
+﻿# 🎙️ VoiceDOM: Universal Multilingual AI Voice Navigation, Form Autopilot & Web Accessibility Suite
 
-> **🏆 Built for Major League Hacking (MLH) — Best Open-Source AI Project Challenge**  
-> *An open-source, 3-in-1 accessibility suite enabling zero-code voice navigation and autonomous form-filling on **ANY** website on the internet, powered by **OpenAI Whisper Large v3** and **Qwen 2.5 / 3.8-27B**.*
+> **An Open-Source Web Accessibility & Agentic Automation Engine that works on ANY website on the internet.** Powered by **Whisper Large v3** and **Qwen 2.5 / 3.8-27B** via high-speed inference.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](https://opensource.org/licenses/MIT)
-[![Whisper STT](https://img.shields.io/badge/STT-Whisper%20Large%20v3-orange.svg)](https://github.com/openai/whisper)
-[![Qwen LLM](https://img.shields.io/badge/LLM-Qwen%202.5%20%2F%203.8--27B-blue.svg)](https://github.com/QwenLM/Qwen2.5)
-[![Manifest V3](https://img.shields.io/badge/Extension-Chrome%20Manifest%20V3-4285F4.svg)](https://developer.chrome.com/docs/extensions/)
-[![Agent Skill](https://img.shields.io/badge/Standard-Agent%20Skill%20Open%20Standard-purple.svg)](./SKILL.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![Manifest V3](https://img.shields.io/badge/Chrome%20Extension-Manifest%20V3-blue.svg)](packages/extension)
+[![Open Source AI](https://img.shields.io/badge/Open--Source%20AI-Whisper%20v3%20%2B%20Qwen%202.5-purple.svg)](SKILL.md)
 
 ---
 
-## 📌 Table of Contents
-- [💡 Problem & Breakthrough](#-problem--breakthrough)
-- [✨ The 3-in-1 Ecosystem](#-the-3-in-1-ecosystem)
-- [🤖 Open-Weight AI & DOM Architecture](#-open-weight-ai--dom-architecture)
-- [🎬 Live Demo Showcase](#-live-demo-showcase)
-- [💻 1. Drop-In Web SDK (For Developers)](#-1-drop-in-web-sdk-for-developers)
-- [🌐 2. Universal Chrome Extension (For End Users)](#-2-universal-chrome-extension-for-end-users)
-- [📝 3. VoiceForm Autopilot (For Multi-Step Forms)](#-3-voiceform-autopilot-for-multi-step-forms)
-- [🚀 Quick Start & Installation](#-quick-start--installation)
-- [📜 Open-Source License](#-open-source-license)
+## 🌟 What is VoiceDOM?
+
+Instead of requiring web developers to hardcode voice commands or configure hundreds of route intents for every single page, **VoiceDOM** dynamically scans the live DOM accessibility tree on **ANY webpage** and uses an open-weight reasoning model to execute native mouse clicks, auto-fill complex multi-step forms across regional dialects, find & scroll to on-screen elements, and read page instructions out loud.
+
+VoiceDOM comes in **3 unified formats**:
+1. 🌐 **Universal Browser Extension (Manifest V3)**: Install once in Chrome/Edge/Brave and navigate *any* website (Amazon, Wikipedia, Government Portals, University Portals).
+2. 📝 **Autonomous VoiceForm Autopilot**: 1-sentence continuous multi-field entity extraction and filling with conversational memory.
+3. 📦 **1-Line Drop-in Web SDK**: `<script src="voicedom.js"></script>` or React widget for web developers.
 
 ---
 
-## 💡 Problem & Breakthrough
+## 🚀 Quickstart: Running the Browser Extension
 
-Digital accessibility today is fundamentally broken for **hundreds of millions of non-English speakers, elderly users, and individuals with visual/motor impairments**:
-1. **Developers Don't Have Time**: Writing custom voice intents for every page, button, and route is tedious and unmaintainable.
-2. **Users Are Trapped**: Traditional voice assistants only work inside proprietary apps and cannot navigate generic websites on the web.
-3. **Form Abandonment**: Complex multi-field forms (KYC, banking, e-commerce, government registrations) have over 65% drop-off rates among rural users.
+### 1️⃣ Open Chrome Extensions
+1. Open Google Chrome, Brave, or Microsoft Edge.
+2. In your address bar, go to:
+   ```
+   chrome://extensions
+   ```
 
-### 🚀 The VoiceDOM Breakthrough:
-VoiceDOM turns **ANY webpage into a fully voice-navigable interface with ZERO manual intent coding**:
-- Dynamically scans the live DOM accessibility tree in real-time.
-- Uses **Whisper Large v3** and **Qwen 2.5 / 3.8-27B** to understand natural multi-dialect speech (**English**, **বাংলা / Bengali**, **मराठी / Marathi**, **हिन्दी / Hindi**).
-- Autonomously clicks buttons, scrolls pages, and auto-fills entire multi-field forms from a single spoken sentence.
+### 2️⃣ Turn On Developer Mode
+- Toggle the **"Developer mode"** switch in the top right corner to **ON**.
 
----
+### 3️⃣ Load Unpacked Extension
+1. Click the **"Load unpacked"** button in the top left.
+2. Navigate inside the project and select the **`packages/extension`** folder:
+   ```
+   Site_Reader/packages/extension
+   ```
+3. Click **Select Folder**.
 
-## ✨ The 3-in-1 Ecosystem
-
-```
-                                  ┌─────────────────────────────────────────────────────────┐
-                                  │      Spoken Voice Audio (Multilingual: EN, BN, MR)      │
-                                  └────────────────────────────┬────────────────────────────┘
-                                                               │
-                                                               ▼
-                                  ┌─────────────────────────────────────────────────────────┐
-                                  │    Open-Source Kernel: Whisper Large v3 + Qwen 2.5/3.8   │
-                                  │    • Real-time speech transcription                     │
-                                  │    • Dynamic DOM Tree Reasoning & Entity Extraction     │
-                                  └────────────────────────────┬────────────────────────────┘
-                                                               │
-                                                               ▼
-                                  ┌─────────────────────────────────────────────────────────┐
-                                  │            VoiceDOM Action Dispatcher Engine            │
-                                  │    (CLICK, AUTO-FILL, SCROLL, TRANSLATE, NAVIGATE)      │
-                                  └───────────────┬─────────────────────────┬───────────────┘
-                                                  │                         │
-                 ┌────────────────────────────────┴────────┐                │
-                 ▼                                         ▼                ▼
-┌─────────────────────────────────┐   ┌─────────────────────────────┐   ┌─────────────────────────────┐
-│ 1. 📦 Drop-In Web SDK / NPM     │   │ 2. 📝 VoiceForm Autopilot   │   │ 3. 🌐 Universal Chrome Ext  │
-│ For Web Developers (1 line tag) │   │ Auto-detects & fills forms  │   │ For End Users on ANY site   │
-└─────────────────────────────────┘   └─────────────────────────────┘   └─────────────────────────────┘
-```
+### 4️⃣ Open Any Website & Start Navigating!
+Open any website (e.g. `https://amazon.in`, `https://wikipedia.org`, `https://goaps.iitm.ac.in`) — the VoiceDOM floating bar will appear in the bottom right corner ready for voice or typed commands!
 
 ---
 
-## 💻 1. Drop-In Web SDK (For Developers)
+## 🎬 Running the Live Interactive Showcase Demo
 
-Add full multilingual voice navigation to any React, Next.js, Vue, or Vanilla HTML website with just **one line of code**:
+VoiceDOM includes a pre-built 3-in-1 interactive showcase (E-Commerce Store, Multi-Step KYC Form, and Agritech Portal):
 
-```html
-<script src="https://unpkg.com/@voicedom/sdk/dist/bundle.js" data-lang="en"></script>
-```
-
-Or in React / Next.js:
-```tsx
-import { VoiceWidget } from "@voicedom/sdk";
-
-export default function App() {
-  return <VoiceWidget theme="dark" defaultLang="en" />;
-}
-```
-
----
-
-## 🌐 2. Universal Chrome Extension (For End Users)
-
-Take VoiceDOM with you across the entire internet:
-1. Load `packages/extension` as an unpacked extension in **Chrome / Brave / Edge**.
-2. Visit **Amazon**, **Wikipedia**, **Government Portals**, or **GitHub**.
-3. Click **"Speak"** and control the site entirely by voice:
-   - *"Search for mechanical keyboard"* $\rightarrow$ Focuses search bar, types, and submits.
-   - *"Scroll down"* / *"নিচে নামো"* $\rightarrow$ Smooth scroll.
-   - *"Click the first article link"* $\rightarrow$ Triggers native click.
-
----
-
-## 📝 3. VoiceForm Autopilot (For Multi-Step Forms)
-
-Speak an entire sentence naturally in regional dialects:
-> *"My name is Ramesh Kumar, mobile 9876543210, I live in Pune and want to register as a farmer."*  
-> Or in Bengali: *"আমার নাম রমেশ কুমার, মোবাইল ৯৮৭৬৫৪৩২১০, আমি পুনে থাকি"*
-
-**VoiceDOM automatically:**
-1. Maps entities to `name`, `phone`, `city`, and `role`.
-2. Selects the correct `<option>` inside `<select>` dropdowns.
-3. Triggers input event bubbling and visual radar pulse.
-
----
-
-## 🚀 Quick Start & Running the Demo
-
-### 1. Open the Interactive Showcase
-Open [`demo/index.html`](./demo/index.html) directly in your browser, or run:
-```bash
+```powershell
+cd Site_Reader
 npx serve demo
 ```
-
-### 2. Test Voice Commands:
-- **E-Commerce Store**: *"Add organic wheat to cart"*, *"Click fresh tomatoes"*.
-- **Form Autopilot**: *"My name is Ramesh, mobile 9876543210, register as buyer"*.
-- **Navigation**: *"Scroll down"*, *"Top of page"*, *"Open Agritech portal"*.
+Open `http://localhost:3000` (or `http://localhost:5000`) in your browser.
 
 ---
 
-## 📜 Open-Source License
-Distributed under the **[MIT License](./LICENSE)**. Built for the MLH Best Open-Source AI Project Challenge.
+## 🔑 Environment Variables & Configuration
+
+Copy `.env.example` to `.env` to configure your API keys and model parameters:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Default | Description |
+| :--- | :--- | :--- |
+| `GROQ_API_KEY` | *(Built-in Demo Key)* | Groq API Key for zero-latency open-weight model inference |
+| `GROQ_MODEL` | `qwen/qwen3.8-27b` | Open-weight reasoning model for DOM perception |
+| `WHISPER_MODEL` | `whisper-large-v3` | Speech-to-Text model for regional Indic dialect recognition |
+| `DEFAULT_LANGUAGE` | `en` | Default UI language (`en`, `bn`, `mr`, `hi`) |
+| `ENABLE_RADAR_HIGHLIGHT` | `true` | Visual glowing emerald radar pulse on targeted elements |
+
+---
+
+## 🗣️ Supported Commands & Features
+
+| Feature | Example Commands (Voice or Typed) | Action Performed |
+| :--- | :--- | :--- |
+| **Navigation & Clicks** | *"Apply now"*, *"Important dates"*, *"Add wheat to cart"* | Finds matching button/link and triggers native click |
+| **Visual Finder ("Where is X?")** | *"Where is the continue button"*, *"Find the checkbox"* | Smoothly scrolls to target element and pins radar badge |
+| **Multi-Turn Form Autopilot** | *"My name is Aryan Samadder, email is aryan@gmail.com"* | Auto-splits and fills first name, last name, and email |
+| **Checkbox / Terms Agreement** | *"I agree to terms"*, *"I have read and understood instructions"* | Toggles React-safe checkbox state |
+| **Universal Screen Reader** | *"Read page"*, *"Read instructions"*, or click **`🔊 Read`** | Reads out page/modal text using native Speech Synthesis |
+| **Multilingual Dialects** | *"আমার নাম আর্যন"*, *"माझे नाव आर्यन आहे"* | Native entity extraction across English, Bengali, Marathi, Hindi |
+
+---
+
+## 📂 Project Architecture
+
+```
+Site_Reader/
+├── packages/
+│   ├── core/                     # 🧠 AI DOM Perception & Action Execution Engine
+│   │   ├── src/
+│   │   │   ├── types.ts          # Action contracts & DOM schemas
+│   │   │   ├── domScanner.ts     # Z-index modal & interactive element perception
+│   │   │   ├── actionExecutor.ts # Synthetic event bubbling & radar pin animator
+│   │   │   ├── speechPipeline.ts # Continuous audio streaming & debounce buffer
+│   │   │   ├── aiEngine.ts       # Qwen 2.5/3.8 + Whisper reasoning kernel
+│   │   │   └── index.ts
+│   │   └── package.json
+│   │
+│   ├── sdk/                      # 📦 1-Line Drop-in Web SDK (<script> & React)
+│   │   ├── src/
+│   │   │   ├── widget.ts         # Glassmorphic floating AI Voice Orb
+│   │   │   └── index.ts          # Standalone CDN bundle entry
+│   │   └── package.json
+│   │
+│   └── extension/                # 🌐 Universal Browser Extension (Manifest V3)
+│       ├── manifest.json         # Chrome Extension Manifest V3 configuration
+│       ├── background.js         # Service worker
+│       ├── popup.html            # Extension popup UI
+│       ├── popup.js              # Popup control scripts
+│       ├── content.js            # Injected agentic AI content script
+│       └── README.md             # Extension installation guide
+│
+├── demo/                         # 🎬 Multi-Tab Interactive Pitch Showcase
+│   ├── index.html                # E-Commerce, KYC Form & Agritech tabs
+│   └── style.css                 # Modern dark glassmorphism styling
+│
+├── .env.example                  # Environment configuration template
+├── SKILL.md                      # Agent Skill Open Standard Specification
+├── LICENSE                       # MIT License
+├── package.json                  # Standalone monorepo manifest
+└── README.md                     # Master Documentation
+```
+
+---
+
+## ⚖️ License
+
+Distributed under the **MIT License**. See [LICENSE](LICENSE) for more information.

@@ -1,9 +1,9 @@
-(function() {
+﻿(function() {
   if (window.top !== window.self) return;
   if (window.__voicedom_injected) return;
   window.__voicedom_injected = true;
 
-  let GROQ_API_KEY = window.__VOICEDOM_API_KEY || (typeof localStorage !== "undefined" ? localStorage.getItem("VOICEDOM_API_KEY") : "") || "";
+  const GROQ_API_KEY = "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";
   const GROQ_MODEL = "qwen/qwen3.8-27b";
 
   let isListening = false;
@@ -250,9 +250,7 @@
     return style.display !== "none" && style.visibility !== "hidden" && style.opacity !== "0";
   }
 
-  // Detect True Center Modal / Dialog (Excludes sidebars and right-hand banners)
   function getActiveTrueModalContainer() {
-    // 1. Explicit HTML5 / ARIA modals
     const modalSelectors = [
       'dialog[open]',
       '[role="dialog"][aria-modal="true"]',
@@ -271,7 +269,6 @@
       }
     }
 
-    // 2. High z-index CENTERED dialogs (Must be centered in viewport, NOT pinned to the side edge)
     const candidates = Array.from(document.querySelectorAll("div[style*='z-index']"));
     const viewportWidth = window.innerWidth;
 
@@ -282,7 +279,6 @@
 
       if (z >= 100 && (style.position === "fixed" || style.position === "absolute") && isElementVisible(el)) {
         const rect = el.getBoundingClientRect();
-        // Check if centered horizontally (not a sidebar on the far right/left)
         const isNotSidebar = rect.left > (viewportWidth * 0.08) && rect.right < (viewportWidth * 0.92);
         if (isNotSidebar && rect.width > 250 && rect.height > 150) {
           if (el.querySelector("button, [role='button'], .btn, a, input")) {
@@ -335,7 +331,6 @@
       .filter(t => t.length > 2 && t.length < 90)
       .slice(0, 8);
 
-    // Scan full page so no interactive elements are missed
     const interactiveQuery = `
       button, 
       a[href], 
@@ -373,7 +368,6 @@
       const type = (el.getAttribute("type") || "").toLowerCase();
       let text = (el.innerText || el.textContent || "").trim().slice(0, 80);
 
-      // Associated label for checkboxes
       let associatedLabel = "";
       if (tag === "input" && (type === "checkbox" || type === "radio")) {
         if (el.id) {
@@ -392,6 +386,7 @@
       const ariaLabel = el.getAttribute("aria-label") || "";
       const placeholder = el.getAttribute("placeholder") || "";
       const name = el.getAttribute("name") || "";
+      const currentValue = (tag === "input" || tag === "textarea" || tag === "select") ? (el.value || "") : "";
       const isChecked = el.checked === true || el.getAttribute("aria-checked") === "true";
       const isDisabled = el.disabled === true || el.getAttribute("aria-disabled") === "true";
       const inModal = trueModal ? trueModal.contains(el) : false;
@@ -402,6 +397,7 @@
         tag,
         type,
         text: text || associatedLabel,
+        value: currentValue || undefined,
         href: href || undefined,
         ariaLabel,
         placeholder,
@@ -419,7 +415,6 @@
       }
     }
 
-    // Modal elements prioritized at top, followed by full page elements
     const combinedElements = [...modalElements, ...pageElements].slice(0, 65);
 
     return {
@@ -542,11 +537,18 @@
     el.click();
   }
 
+  // Robust Field Replacement Type Dispatcher (Overwrites & Cleans Old Text)
   async function executeTypeOnElement(el, value) {
     if (!el) return;
-    locateAndHighlightTarget(el, `Typed: ${value}`);
+    locateAndHighlightTarget(el, `Replaced: ${value}`);
     el.focus();
+
     try {
+      // 1. Clear previous value cleanly
+      el.value = "";
+      el.dispatchEvent(new Event("input", { bubbles: true }));
+
+      // 2. Set new replacement value using prototype descriptor
       const proto = window.HTMLInputElement.prototype;
       const desc = Object.getOwnPropertyDescriptor(proto, "value");
       if (desc && desc.set) {
@@ -557,6 +559,8 @@
     } catch (e) {
       el.value = value || "";
     }
+
+    // 3. Dispatch change & input events so framework state updates
     el.dispatchEvent(new Event("input", { bubbles: true }));
     el.dispatchEvent(new Event("change", { bubbles: true }));
   }
@@ -604,7 +608,6 @@
     if ((action.type === "CLICK" || action.type === "TOGGLE_CHECKBOX") && action.selector) {
       let el = document.querySelector(action.selector);
 
-      // Fallback: search by text across visible buttons & links
       if (!el && action.label) {
         const searchVal = action.label.toLowerCase();
         const candidates = Array.from(document.querySelectorAll("button, a, .btn, [role='button'], input[type='button'], input[type='submit']"));
@@ -628,7 +631,7 @@
       return;
     }
 
-    // 6. Single Field Type
+    // 6. Single Field Type (Replace)
     if (action.type === "TYPE" && action.selector) {
       const el = document.querySelector(action.selector);
       if (el) {
@@ -642,7 +645,7 @@
       return;
     }
 
-    // 7. Multi-Field Auto-Fill
+    // 7. Multi-Field Auto-Fill & Full Replacement
     if (action.type === "AUTO_FILL" && action.formData) {
       for (const [k, v] of Object.entries(action.formData)) {
         if (!v) continue;
@@ -686,7 +689,7 @@
 
     const recentHistoryText = conversationHistory.slice(-4).map(h => `${h.role === 'user' ? 'User' : 'Assistant'}: "${h.content}"`).join("\n");
 
-    const systemPrompt = `You are VoiceDOM: an autonomous Universal Web Navigation & Interaction Autopilot.
+    const systemPrompt = `You are VoiceDOM: an autonomous Universal Web Navigation & Form Autopilot.
 Active Page: "${snapshot.title}" (${snapshot.url})
 Modal Active: ${snapshot.hasActiveModal ? "YES" : "NO"}
 Interactive Elements on page: ${JSON.stringify(snapshot.elements)}
@@ -694,28 +697,27 @@ Interactive Elements on page: ${JSON.stringify(snapshot.elements)}
 RECENT CONVERSATION HISTORY:
 ${recentHistoryText || "No previous turns"}
 
-TASK: Match user command "${query}" to the exact action and target interactive element.
-RULES:
-1. "CLICK" or "NAVIGATE" (e.g. "Proceed", "Click here", "Close", "Next", "Apply now", "Important dates"):
-   - Find the exact matching button, link (<a>), or nav item from Interactive Elements.
-   - Return {"type": "CLICK", "selector": "<exact selector>", "reply": "Clicking button/link"}
-2. "READ SCREEN" / "READ PAGE" / "READ INSTRUCTIONS" (ONLY when user explicitly asks to read/narrate text):
-   - Return {"type": "READ_PAGE", "reply": "Reading page content"}
-3. "WHERE IS X" / "FIND X" / "SCROLL TO X":
-   - Return {"type": "LOCATE_ELEMENT", "selector": "<exact selector>", "label": "<name>", "reply": "Found X and scrolled to it"}
-4. "AUTO_FILL" or "TYPE" for form inputs.
-5. "SCROLL" (UP/DOWN).
+RULES FOR FORM FILLING & REPLACEMENT:
+1. AUTO_FILL & REPLACEMENT:
+   - When user gives a name (e.g. "My name is Jesus Christ" or "Aryan Samadder" or "Change name to Rahul"):
+   - If page has separate "First name" and "Last name" fields (or inputs named fname/lname/first/last):
+     Map and REPLACE both fields: {"formData": {"first": "<first_name>", "last": "<last_name>"}}
+   - If page has a single "name" field: {"formData": {"name": "<full_name>"}}
+   - If user gives email, password, city, or phone, map to appropriate form fields to overwrite/replace.
+2. CLICK or NAVIGATE for buttons/links.
+3. READ SCREEN / READ PAGE (only when user asks to read).
+4. WHERE IS X / FIND X (locate and scroll).
 
 Return STRICT JSON ONLY:
 {
-  "type": "CLICK" | "NAVIGATE" | "LOCATE_ELEMENT" | "READ_PAGE" | "AUTO_FILL" | "TYPE" | "SCROLL" | "UNKNOWN",
+  "type": "AUTO_FILL" | "TYPE" | "CLICK" | "NAVIGATE" | "LOCATE_ELEMENT" | "READ_PAGE" | "SCROLL" | "UNKNOWN",
   "selector": "<css selector or null>",
   "targetUrl": "<url or null>",
   "label": "<label or null>",
   "value": "<text or null>",
-  "formData": {"field": "val"} | null,
+  "formData": {"first": "val", "last": "val", "email": "val"} | null,
   "direction": "UP" | "DOWN" | null,
-  "reply": "<short polite acknowledgment in user's spoken language>"
+  "reply": "<short confirmation in user's spoken language>"
 }`;
 
     try {
@@ -738,7 +740,8 @@ Return STRICT JSON ONLY:
 
       if (res.ok) {
         const data = await res.json();
-        const parsed = JSON.parse(data.choices[0]?.message?.content || "{}");
+        const contentStr = data.choices[0]?.message?.content || "{}";
+        const parsed = JSON.parse(contentStr);
         await executeAction(parsed);
 
         conversationHistory.push({ role: "user", content: query });
@@ -752,14 +755,17 @@ Return STRICT JSON ONLY:
           }
         }
       } else {
-        statusBox.innerText = "⚠️ AI response error";
+        const errText = await res.text();
+        console.error("Groq API error:", res.status, errText);
+        statusBox.innerText = `⚠️ AI error (${res.status})`;
       }
     } catch (e) {
+      console.error("VoiceDOM process error:", e);
       statusBox.innerText = "⚠️ Connection error";
     } finally {
       setTimeout(() => {
         isProcessing = false;
-      }, 1200);
+      }, 1000);
     }
   }
 
@@ -919,5 +925,5 @@ Return STRICT JSON ONLY:
     handleUrlOrDomChange();
   };
 
-  console.log("VoiceDOM Universal AI Injected with Full Page Scope & True Modal Filter.");
+  console.log("VoiceDOM Universal AI Injected with Clean Field Overwrite & Replace Support.");
 })();
